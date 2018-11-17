@@ -148,6 +148,8 @@ def emptyInv():
 def formatTime(curSeconds):
     return str(datetime.timedelta(seconds=curSeconds))
 
+#THIS IS THE MAIN FUNCTION OF THE PROGRAM
+#call this to run the bot
 def runBot():
     initStats()
     while 1:
