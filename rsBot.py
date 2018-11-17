@@ -184,13 +184,15 @@ def initStats():
     statFile.close()
     
 def updateStats():
+    logsPerLoad = 28
+    experiencePerLog = 67.5
     global totalLoads
     global totalTime
     global curLoads
     global curTime
     global startTime
     global lastTime
-    loadTime = lastTime - startTime
+    loadTime = time.time() - lastTime
     lastTime = time.time()
     totalTime += loadTime
     curTime += loadTime
@@ -201,8 +203,12 @@ def updateStats():
     statFile.close()
     print('***Load Stats***')
     print('Load Stats:')
-    print('Current Session Loads:\t{}'.format(curLoads))
+    print('Current Session Loads:\t{0}'.format(curLoads))
+    print('Current Session Logs:\t%d' % (curLoads * logsPerLoad))
+    print('Current Session Experience:\t%d' % ((curLoads * logsPerLoad) * experiencePerLog))
     print('Total Loads:\t{0}'.format(totalLoads))
+    print('Total Logs:\t%d' % (totalLoads * logsPerLoad))
+    print('Total Experience:\t%d' % ((totalLoads * logsPerLoad) * experiencePerLog))
     print('Time:')
     print('Last Load Time:\t{0}'.format(formatTime(loadTime)))
     print('Session Run Time:\t{0}'.format(formatTime(curTime)))
