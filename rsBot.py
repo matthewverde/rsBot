@@ -27,8 +27,18 @@ clickableMouse = Controller()
 # twice on Mac OSX
 #mouse.click(Button.left, 2)
 
+# my Comp map loc 979
+# my x clickPosition loc 485
+# my empty inv loc 785
+# my take screenshot of lat inv slot loc 1020
+
 # Scroll two steps down
 #mouse.scroll(0, 2)
+def getWindowSize():
+    global screenSize
+    print('move mouse to far right of screen')
+    time.sleep(2)
+    screenSize = clickableMouse.position[0]
 
 def on_move(x, y):
     print('X: {0}, Y: {1}'.format(x, y))
@@ -47,7 +57,8 @@ def toBank():
 
 #be looking true north
 def moveXY(x, y):
-    homeX = 979
+    #homeX = 979
+    homeX = (screenSize / 2) + 259
     homeY = 129.5
     increment = 4.0
     newX = homeX + (x * increment)
@@ -70,9 +81,8 @@ def clickPosition(pos, rightClick):
     startPos = (0,0)
     increment = 90
     mult = 0
-    startX = 485
+    startX = (screenSize / 2) - 235
     startY = 0
-    print(clickableMouse.position)
     if pos < 4:
         startY = 170
         mult = pos - 1
@@ -92,7 +102,7 @@ def clickPosition(pos, rightClick):
 
 def isInvFull():
     base = getRGB('envSpot/base.png')
-    takePhotoOfLastInvSpot()
+    takePhotoOfLastInvSpot('envSpot/env.png')
     cur = getRGB('envSpot/env.png')
     #print('{0}, {1}, {2}'.format(base[0], base[1], base[2]))
     #print('{0}, {1}, {2}'.format(cur[0], cur[1], cur[2]))
@@ -101,9 +111,9 @@ def isInvFull():
         return False
     return True
 
-def takePhotoOfLastInvSpot():
-    screenshot = pyscreenshot.grab(bbox=(1020, 470, 1060, 510))
-    screenshot.save('envSpot/env.png')
+def takePhotoOfLastInvSpot(location):
+    screenshot = pyscreenshot.grab(bbox=((screenSize / 2) + 300, 470, (screenSize / 2) + 340, 510))
+    screenshot.save(location)
 
 def getRGB(pathname):
     r = 0
@@ -133,7 +143,7 @@ def chopWillow():
         invFull = isInvFull()
 
 def clickEmptyEnv():
-    clickableMouse.position = (785, 350)
+    clickableMouse.position = ((screenSize / 2) + 65, 350)
     time.sleep(1)
     clickableMouse.click(Button.left, 1)
 
@@ -151,6 +161,8 @@ def formatTime(curSeconds):
 #THIS IS THE MAIN FUNCTION OF THE PROGRAM
 #call this to run the bot
 def runBot():
+    getWindowSize()
+    takePhotoOfLastInvSpot('envSpot/base.png')
     initStats()
     while 1:
         chopWillow()
@@ -224,6 +236,7 @@ curLoads = 0
 curTime = 0
 startTime = 0
 lastTime = 0
+screenSize = 0
 runBot()
 
 
