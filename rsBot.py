@@ -36,9 +36,34 @@ clickableMouse = Controller()
 #mouse.scroll(0, 2)
 def getWindowSize():
     global screenSize
-    print('move mouse to far right of screen')
-    time.sleep(2)
+    print('Move mouse to far right of screen')
+    print('Recording Screen Size in 3')
+    time.sleep(1)
+    print('2')
+    time.sleep(1)
+    print('1')
+    time.sleep(1)
     screenSize = clickableMouse.position[0]
+    print('Screensize: {0}'.format(screenSize))
+    screenFile = open('screenSize.txt', 'w')
+    screenFile.write('{0}'.format(screenSize))
+    screenFile.close()
+
+def getScreenSizeFromFile():
+    screenFile = open('screenSize.txt', 'r')
+    lines = []
+    for line in screenFile:
+        lines.append(line)
+    global screenSize
+    screenFile.close()
+    if len(lines):
+        screenSize = float(lines[0])
+    else:
+        getWindowSize()
+
+    if screenSize < 100:
+        getWindowSize()
+
 
 def on_move(x, y):
     print('X: {0}, Y: {1}'.format(x, y))
@@ -158,10 +183,27 @@ def emptyInv():
 def formatTime(curSeconds):
     return str(datetime.timedelta(seconds=curSeconds))
 
+def menu():
+    print('******* Welcome to Matthew Verde\'s RuneScape Bot *******')
+    userInput = 0
+    while userInput != 4:
+        print('1. Run Bot');
+        print('2. Calibrate window size')
+        print('3. View Stats')
+        print('4. Quit')
+        userInput = int(input())
+        if userInput == 1:
+            runBot()
+        elif userInput == 2:
+            getWindowSize()
+        else:
+            print('Fuck Youreself')
+
+
 #THIS IS THE MAIN FUNCTION OF THE PROGRAM
 #call this to run the bot
 def runBot():
-    getWindowSize()
+    getScreenSizeFromFile()
     takePhotoOfLastInvSpot('envSpot/base.png')
     initStats()
     while 1:
@@ -237,7 +279,7 @@ curTime = 0
 startTime = 0
 lastTime = 0
 screenSize = 0
-runBot()
+menu()
 
 
 
