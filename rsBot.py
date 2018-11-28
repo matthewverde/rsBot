@@ -72,6 +72,7 @@ def toWillow():
     clickableMouse.position = (960, 158)
     clickableMouse.click(Button.left, 1)
 
+
 def toBank():
     clickableMouse.position = (1000, 100)
     clickableMouse.click(Button.left, 1)
@@ -104,7 +105,7 @@ def moveXY(x, y):
 #(520,340) () ()
 def clickPosition(pos, rightClick):
     startPos = (0,0)
-    increment = 90
+    increment = 110
     mult = 0
     startX = (screenSize / 2) - 235
     startY = 0
@@ -167,13 +168,56 @@ def chopWillow():
         time.sleep(7)
         invFull = isInvFull()
 
+def chopWillow():
+    #go to willow
+    moveXY(9, 1)
+    time.sleep(10)
+    invFull = False
+    #chop willow
+    while invFull is not True:
+        clickPosition(6, False)
+        time.sleep(7)
+        invFull = isInvFull()
+
+def chopTree(type):
+    #go to willow
+    xy = getTreeLoc(type)
+    clickPos = getClickPosition(type)
+    if xy == None:
+        print('Type {0} is not a valid type'.format(type))
+        return
+    moveXY(xy[0], xy[1])
+    time.sleep(10)
+    invFull = False
+    #chop willow
+    while invFull is not True:
+        clickPosition(clickPos, False)
+        time.sleep(7)
+        invFull = isInvFull()
+
+def getTreeLoc(type):
+    locMap = {'willow': (-5, 6), 'oak': (9,-1)}
+    return locMap.get(type, None)
+
+def getBankLoc(type):
+    locMap = {'willow': (5, -6), 'oak': (-9,1)}
+    return locMap.get(type, None)
+
+def getClickPosition(type):
+    locMap = {'willow': 4, 'oak': 6}
+    return locMap.get(type, None)
+
 def clickEmptyEnv():
     clickableMouse.position = ((screenSize / 2) + 65, 350)
     time.sleep(1)
     clickableMouse.click(Button.left, 1)
 
-def emptyInv():
-    moveXY(5, -6)
+def emptyInv(type):
+    xy = getBankLoc(type)
+    if xy == None:
+        print('Type {0} is not a valid type'.format(type))
+        return
+    moveXY(xy[0], xy[1])
     time.sleep(10)
     clickPosition(4, False)
     time.sleep(1)
@@ -183,32 +227,68 @@ def emptyInv():
 def formatTime(curSeconds):
     return str(datetime.timedelta(seconds=curSeconds))
 
+def sandBox():
+    userInput = 0
+    getScreenSizeFromFile()
+    print('Welcome to the sandbox of the rsBot')
+    print('Enter \'help\' for more info')
+    while userInput != 'quit':
+        userInput = input()
+        inputs = userInput.split()
+        if len(inputs):
+            handleSandboxInput(inputs)
+        else:
+            print('Could not process input')
+
+def handleSandboxInput(inputs):
+    if inputs[0] == 'help':
+        print('Commands go in the order: <command> <arg1> <arg2> ... <arg_n>\nList of inputs include\n1.\tmoveXY\n2.\tclickPosition')
+    elif inputs[0] == 'moveXY':
+        if len(inputs) == 3:
+            moveXY(int(inputs[1]), int(inputs[2]))
+        else:
+            print('moveXY takes 2 inputs, an X and Y coordinate, you provided {0} inputs'.format(len(inputs) - 1))
+    elif inputs[0] == 'clickPosition':
+        if len(inputs) == 2:
+            clickPosition(int(inputs[1]), False)
+        else:
+            print('clickPosition takes 1 input, a number from 1-9, you provided {0} inputs'.format(len(inputs) - 1))
+    else:
+        print('Input {0} unknown. Enter \'help\' for more info')
+
+
 def menu():
     print('******* Welcome to Matthew Verde\'s RuneScape Bot *******')
     userInput = 0
-    while userInput != 4:
-        print('1. Run Bot');
-        print('2. Calibrate window size')
-        print('3. View Stats')
-        print('4. Quit')
+    while userInput != 6:
+        print('1.\tCut Willow');
+        print('2.\tCut Oak')
+        print('3.\tCalibrate window size')
+        print('4.\tView Stats')
+        print('5.\tSandbox')
+        print('6.\tQuit')
         userInput = int(input())
         if userInput == 1:
-            runBot()
+            runBot('willow')
         elif userInput == 2:
+            runBot('oak')
+        elif userInput == 3:
             getWindowSize()
+        elif userInput == 5:
+            sandBox()
         else:
             print('Fuck Youreself')
 
 
 #THIS IS THE MAIN FUNCTION OF THE PROGRAM
 #call this to run the bot
-def runBot():
+def runBot(treeType):
     getScreenSizeFromFile()
     takePhotoOfLastInvSpot('envSpot/base.png')
     initStats()
     while 1:
-        chopWillow()
-        emptyInv()
+        chopTree(treeType)
+        emptyInv(treeType)
         updateStats()
 
 def initStats():
