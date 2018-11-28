@@ -10,8 +10,8 @@ Make sure to have the dependencies installed
 5. time
 6. datetime
 
-#To start program
-python rsBot.py
+# To start program
+`python rsBot.py`
 
 from there you have a menu of options
 
